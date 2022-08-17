@@ -1,0 +1,20 @@
+{
+    "name": "app/gb",
+    "description": "php2",
+    "autoload": {
+        "psr-4": {
+            "App\\Gb\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "daniel"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "ext-json": "*",
+        "ext-gd": "*",
+        "fakerphp/faker": "^1.20"
+    }
+}
