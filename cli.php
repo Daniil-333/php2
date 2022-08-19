@@ -1,12 +1,12 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-use App\Blog\Post;
-use App\Blog\Comment;
-use App\Person\User;
+use Geekbrains\Blog\Post;
+use Geekbrains\Blog\Comment;
+use Geekbrains\Person\User;
 use Faker\Factory;
 
-$faker = Factory::create();
+$faker = Factory::create('RU');
 
 $result = match ($argv[1]) {
     'user' => (string)new User($faker->name, $faker->lastName),

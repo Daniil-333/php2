@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Person;
+namespace Geekbrains\Person;
 
 class User {
 
