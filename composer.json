@@ -3,7 +3,7 @@
     "description": "php2",
     "autoload": {
         "psr-4": {
-            "App\\Gb\\": "src/"
+            "App\\": "src/"
         }
     },
     "authors": [

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Gb\Person;
+namespace App\Person;
 
 class User {
 

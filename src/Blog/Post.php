@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Gb\Blog;
+namespace App\Blog;
 
 class Post {
 

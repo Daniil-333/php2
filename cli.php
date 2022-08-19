@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-use App\Gb\Blog\Post;
-use App\Gb\Blog\Comment;
-use App\Gb\Person\User;
+use App\Blog\Post;
+use App\Blog\Comment;
+use App\Person\User;
 use Faker\Factory;
 
 $faker = Factory::create();
