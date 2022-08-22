@@ -20,11 +20,11 @@ require_once __DIR__ . '/vendor/autoload.php';
     }
 });*/
 
-
 $fakerRu = Factory::create('ru_RU');
 $fakerEn = Factory::create();
 
 $name = new Name($fakerRu->firstName, $fakerRu->lastName);
+
 $user = new User($fakerEn->randomNumber(), $name, $fakerEn->userName);
 
 $post = new Post($fakerEn->randomNumber(), $user, $fakerRu->text(10), $fakerRu->text);

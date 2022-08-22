@@ -25,18 +25,49 @@ class Comment {
     /**
      * @return int
      */
-    public function getAuthorId(): int
+    public function getId(): int
     {
-        return $this->author->getId();
+        return $this->id;
     }
 
     /**
-     * @return int
+     * @return User
      */
-    public function getPostId(): int
+    public function getAuthor(): User
     {
-        return $this->post->getId();
+        return $this->author;
     }
 
+    /**
+     * @return Post
+     */
+    public function getPost(): Post
+    {
+        return $this->post;
+    }
+
+    /**
+     * @param User $author
+     */
+    public function setAuthor(User $author): void
+    {
+        $this->author = $author;
+    }
+
+    /**
+     * @param Post $post
+     */
+    public function setPost(Post $post): void
+    {
+        $this->post = $post;
+    }
+
+    /**
+     * @param string $text
+     */
+    public function setText(string $text): void
+    {
+        $this->text = $text;
+    }
 
 }

@@ -29,4 +29,22 @@ class User {
     {
         return $this->id;
     }
+
+    /**
+     * @return Name
+     */
+    public function getUsername(): Name
+    {
+        return $this->username;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogin(): string
+    {
+        return $this->login;
+    }
+
+
 }
