@@ -1,9 +1,9 @@
 {
-    "name": "gb/geekbrains",
+    "name": "geekbrains/app",
     "description": "php2",
     "autoload": {
         "psr-4": {
-            "Geekbrains\\": "src/"
+            "Geekbrains\\App\\": "src/"
         }
     },
     "authors": [
