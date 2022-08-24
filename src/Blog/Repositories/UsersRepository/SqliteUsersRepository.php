@@ -25,8 +25,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
         // Подготавливаем запрос
         $statement = $this->connection->prepare(
-            'INSERT INTO users (first_name, last_name, uuid, username) 
-VALUES (:first_name, :last_name, :uuid, :username)'
+            'INSERT INTO users (first_name, last_name, uuid, username) VALUES (:first_name, :last_name, :uuid, :username)'
 
         );
         // Выполняем запрос с конкретными значениями
@@ -85,7 +84,9 @@ VALUES (:first_name, :last_name, :uuid, :username)'
      */
     private function getUser(PDOStatement $statement, string $errorString): User
     {
+        $statement->execute([(string)$errorString]);
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
         if ($result === false) {
             throw new UserNotFoundException(
                 "Cannot find user: $errorString"

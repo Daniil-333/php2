@@ -4,6 +4,7 @@ namespace Geekbrains\App\Blog\Repositories\PostsRepository;
 
 use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
+use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Post;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\UUID;
@@ -39,9 +40,11 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     }
 
     // Метод для получения статьи по её UUID
+
     /**
      * @throws PostNotFoundException
      * @throws InvalidArgumentException
+     * @throws UserNotFoundException
      */
     public function get(UUID $uuid): Post
     {
@@ -65,11 +68,12 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
     /**
      * @throws PostNotFoundException
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException|UserNotFoundException
      */
     private function getPost(PDOStatement $statement, string $errorString): Post
     {
 
+        $statement->execute([(string)$errorString]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($result === false) {
@@ -78,7 +82,6 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             );
         }
         $user = $this->getUser($result['user_id']);
-        var_dump($user);die();
         // Создаём объект статьи с полем username
         return new Post(
             new UUID($result['uuid']),
@@ -88,6 +91,10 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         );
     }
 
+    /**
+     * @throws UserNotFoundException
+     * @throws InvalidArgumentException
+     */
     private function getUser($user_id): User
     {
         $statement = $this->connection->prepare(
@@ -98,10 +105,16 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         ]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
+        if ($result === false) {
+            throw new UserNotFoundException(
+                "Cannot find user: $user_id"
+            );
+        }
+
         return new User(
             new UUID($result['uuid']),
-            $result['username'],
             new Name($result['first_name'], $result['last_name']),
+            $result['username'],
         );
     }
 }
