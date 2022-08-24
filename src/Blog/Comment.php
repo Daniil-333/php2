@@ -19,7 +19,7 @@ class Comment {
 
     public function __toString(): string
     {
-        return $this->text;
+        return $this->user . " пишет комментарий " . $this->text;
     }
 
     /**

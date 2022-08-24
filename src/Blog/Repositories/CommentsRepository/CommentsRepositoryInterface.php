@@ -7,6 +7,6 @@ use Geekbrains\App\Blog\UUID;
 
 interface CommentsRepositoryInterface
 {
-    public function save(Comment $user): void;
+    public function save(Comment $comment): void;
     public function get(UUID $uuid): Comment;
 }

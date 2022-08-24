@@ -19,7 +19,7 @@ class Post {
 
     public function __toString(): string
     {
-        return $this->title . PHP_EOL . $this->text;
+        return $this->user . ' пишет: ' . $this->title . PHP_EOL . $this->text  . PHP_EOL;
     }
 
     /**
