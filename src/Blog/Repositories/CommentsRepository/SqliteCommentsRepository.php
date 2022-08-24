@@ -7,6 +7,8 @@ use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
 use Geekbrains\App\Blog\Post;
+use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\Comment;
 use Geekbrains\App\Blog\UUID;
@@ -77,65 +79,13 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
                 "Cannot find comment: $errorString"
             );
         }
-        $user = $this->getUser($result['user_id']);
-        $post = $this->getPost($result['post_id']);
+        $user = (new SqliteUsersRepository($this->connection))->get(new UUID($result['user_id']));
+        $post = (new SqlitePostsRepository($this->connection))->get(new UUID($result['post_id']));
 
         return new Comment(
             new UUID($result['uuid']),
             $user,
             $post,
-            $result['text'],
-        );
-    }
-
-    private function getUser($user_id): User
-    {
-        $statement = $this->connection->prepare(
-            'SELECT * FROM users WHERE uuid = :uuid'
-        );
-        $statement->execute([
-            ':uuid' => $user_id,
-        ]);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if ($result === false) {
-            throw new UserNotFoundException(
-                "Cannot find user: $user_id"
-            );
-        }
-
-        return new User(
-            new UUID($result['uuid']),
-            new Name($result['first_name'], $result['last_name']),
-            $result['username'],
-        );
-    }
-
-    /**
-     * @throws PostNotFoundException
-     * @throws InvalidArgumentException|UserNotFoundException
-     */
-    private function getPost($post_id): Post
-    {
-        $statement = $this->connection->prepare(
-            'SELECT * FROM posts WHERE uuid = :uuid'
-        );
-        $statement->execute([
-            ':uuid' => $post_id,
-        ]);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if ($result === false) {
-            throw new PostNotFoundException(
-                "Cannot find post: $post_id"
-            );
-        }
-        $user = $this->getUser($result['user_id']);
-
-        return new Post(
-            new UUID($result['uuid']),
-            $user,
-            $result['title'],
             $result['text'],
         );
     }

@@ -6,6 +6,7 @@ use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Post;
+use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Person\Name;
@@ -80,7 +81,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
                 "Cannot find post: $errorString"
             );
         }
-        $user = $this->getUser($result['user_id']);
+        $user = (new SqliteUsersRepository($this->connection))->get(new UUID($result['user_id']));
 
         return new Post(
             new UUID($result['uuid']),
@@ -90,30 +91,4 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         );
     }
 
-    /**
-     * @throws UserNotFoundException
-     * @throws InvalidArgumentException
-     */
-    private function getUser($user_id): User
-    {
-        $statement = $this->connection->prepare(
-            'SELECT * FROM users WHERE uuid = :uuid'
-        );
-        $statement->execute([
-            ':uuid' => $user_id,
-        ]);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if ($result === false) {
-            throw new UserNotFoundException(
-                "Cannot find user: $user_id"
-            );
-        }
-
-        return new User(
-            new UUID($result['uuid']),
-            new Name($result['first_name'], $result['last_name']),
-            $result['username'],
-        );
-    }
 }
