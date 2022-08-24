@@ -6,45 +6,65 @@ use Geekbrains\App\Person\Name;
 
 class User {
 
-    private int $id;
-    private Name $username;
-    private string $login;
+    private UUID $uuid;
+    private Name $name;
+    private string $username;
 
-    public function __construct(int $id, Name $name, string $login)
+    /**
+     * @param UUID $uuid
+     * @param Name $name
+     * @param string $login
+     */
+    public function __construct(UUID $uuid, Name $name, string $login)
     {
-        $this->id = $id;
-        $this->username = $name;
-        $this->login = $login;
+        $this->uuid = $uuid;
+        $this->name = $name;
+        $this->username = $login;
     }
 
     public function __toString(): string
     {
-        return $this->username;
+        return "Юзер $this->uuid с именем $this->name и логином $this->username." . PHP_EOL;
     }
 
     /**
-     * @return int
+     * @return UUID
      */
-    public function getId(): int
+    public function uuid(): UUID
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     /**
      * @return Name
      */
-    public function getUsername(): Name
+    public function name(): Name
     {
-        return $this->username;
+        return $this->name;
+    }
+
+    /**
+     * @param Name $name
+     */
+    public function setName(Name $name): void
+    {
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getLogin(): string
+    public function username(): string
     {
-        return $this->login;
+        return $this->username;
     }
 
+    /**
+     * @param string $username
+     */
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
 
 }

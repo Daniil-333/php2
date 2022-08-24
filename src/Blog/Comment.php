@@ -4,15 +4,15 @@ namespace Geekbrains\App\Blog;
 
 class Comment {
 
-    private int $id;
-    private User $author;
+    private UUID $uuid;
+    private User $user;
     private Post $post;
     private string $text;
 
-    public function __construct(int $id, User $author, Post $post, string $text)
+    public function __construct(UUID $uuid, User $user, Post $post, string $text)
     {
-        $this->id = $id;
-        $this->author = $author;
+        $this->uuid = $uuid;
+        $this->user = $user;
         $this->post = $post;
         $this->text = $text;
     }
@@ -23,19 +23,19 @@ class Comment {
     }
 
     /**
-     * @return int
+     * @return UUID
      */
-    public function getId(): int
+    public function uuid(): UUID
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     /**
      * @return User
      */
-    public function getAuthor(): User
+    public function getUser(): User
     {
-        return $this->author;
+        return $this->user;
     }
 
     /**
@@ -47,11 +47,11 @@ class Comment {
     }
 
     /**
-     * @param User $author
+     * @param User $user
      */
-    public function setAuthor(User $author): void
+    public function setUser(User $user): void
     {
-        $this->author = $author;
+        $this->user = $user;
     }
 
     /**

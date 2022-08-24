@@ -1,42 +1,40 @@
 <?php
 
+use GeekBrains\App\Blog\Command\Arguments;
+use GeekBrains\App\Blog\Command\CreateUserCommand;
+use GeekBrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+
+use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Blog\Post;
-use Geekbrains\App\Blog\Comment;
-use Geekbrains\App\Person\Name;
 use Geekbrains\App\Blog\User;
-use GeekBrains\App\Blog\Exceptions\AppException;
-use Faker\Factory;
+use Geekbrains\App\Person\Name;
 
-require_once __DIR__ . '/vendor/autoload.php';
+include __DIR__ . "/vendor/autoload.php";
 
-/*spl_autoload_register(function ($className)
-{
-//приходит GeekBrains\Person\Name
-    $file = $className . ".php"; // Person/Name.php
-    $file = str_replace(["\\", 'GeekBrains\App'], [DIRECTORY_SEPARATOR, "src"], $file);
-    //нужно src/Person/Name.php
-    if (file_exists($file)) {
-        include $file;
-    }
-});*/
+//Создаём объект подключения к SQLite
+$connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
 
-$fakerRu = Factory::create('ru_RU');
-$fakerEn = Factory::create();
+/*$usersRepository = new SqliteUsersRepository($connection);
 
-$name = new Name($fakerRu->firstName, $fakerRu->lastName);
+$command = new CreateUserCommand($usersRepository);
 
-$user = new User($fakerEn->randomNumber(), $name, $fakerEn->userName);
+try {
+    $command->handle(Arguments::fromArgv($argv));
+} catch (Exception $e) {
+    echo $e->getMessage();
+}*/
 
-$post = new Post($fakerEn->randomNumber(), $user, $fakerRu->text(10), $fakerRu->text);
-
-$comment = new Comment($fakerEn->randomNumber(), $user, $post, $fakerRu->text(80));
-
-
-$result = match ($argv[1]) {
-    'user' => (string)$user,
-    'comment' => (string)$comment,
-    'post' => (string)$post,
-    default => throw new AppException('Совпадений не найдено'),
-};
-
-print $result;
+$postRepository = new SqlitePostsRepository($connection);
+//$postRepository->save(
+//    new Post(new UUID(uuid_create(UUID_TYPE_RANDOM)), new User(new UUID('c9e6813e-bae2-4140-96ac-8ddac672e13a'),
+//        'admin',
+//        new Name('Ivan', 'Nikitin')),
+//        'title1',
+//        'text1')
+//);
+try {
+    $postRepository->get(new UUID('5625e275-8cfd-4573-82af-28b07401db61'));
+} catch (\Exception $e) {
+    echo $e->getMessage();
+}
