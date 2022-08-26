@@ -6,13 +6,10 @@ use Geekbrains\App\Blog\Exceptions\CommentNotFoundException;
 use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
-use Geekbrains\App\Blog\Post;
 use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
-use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\Comment;
 use Geekbrains\App\Blog\UUID;
-use Geekbrains\App\Person\Name;
 use \PDO;
 use \PDOStatement;
 
