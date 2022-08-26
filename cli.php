@@ -1,7 +1,5 @@
 <?php
 
-use Geekbrains\App\Blog\Command\Arguments;
-use Geekbrains\App\Blog\Command\CreateUserCommand;
 use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use Geekbrains\App\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;

@@ -53,14 +53,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
         );
 
         $statement->execute([(string)$uuid]);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-        // Бросаем исключение, если статья не найдена
-        if ($result === false) {
-            throw new CommentNotFoundException(
-                "Cannot get comment: $uuid"
-            );
-        }
         return $this->getComment($statement, $uuid);
     }
 
@@ -71,7 +64,6 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
     private function getComment(PDOStatement $statement, string $errorString): Comment
     {
 
-        $statement->execute([(string)$errorString]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($result === false) {

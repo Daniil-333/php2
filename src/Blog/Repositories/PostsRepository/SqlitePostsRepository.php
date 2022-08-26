@@ -42,9 +42,9 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     // Метод для получения статьи по её UUID
 
     /**
-     * @throws PostNotFoundException
-     * @throws InvalidArgumentException
      * @throws UserNotFoundException
+     * @throws InvalidArgumentException
+     * @throws PostNotFoundException
      */
     public function get(UUID $uuid): Post
     {
@@ -54,15 +54,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         );
 
         $statement->execute([(string)$uuid]);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-
-        // Бросаем исключение, если статья не найдена
-        if ($result === false) {
-            throw new PostNotFoundException(
-                "Cannot get post: $uuid"
-            );
-        }
         return $this->getPost($statement, $uuid);
     }
 
@@ -73,7 +65,6 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     private function getPost(PDOStatement $statement, string $errorString): Post
     {
 
-        $statement->execute([(string)$errorString]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($result === false) {
