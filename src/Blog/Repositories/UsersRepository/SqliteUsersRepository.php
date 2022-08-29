@@ -19,27 +19,34 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         $this->connection = $connection;
     }
 
-
     public function save(User $user): void
     {
-
-        // Подготавливаем запрос
         $statement = $this->connection->prepare(
-            'INSERT INTO users (first_name, last_name, uuid, username) VALUES (:first_name, :last_name, :uuid, :username)'
+            'INSERT INTO users (
+                       first_name, 
+                       last_name, 
+                       uuid, 
+                       username) 
+                   VALUES (
+                           :first_name, 
+                           :last_name, 
+                           :uuid, 
+                           :username
+                           )
+                   ON CONFLICT (uuid) DO UPDATE SET
+                   first_name = :first_name,
+                   last_name = :last_name'
 
         );
-        // Выполняем запрос с конкретными значениями
+
         $statement->execute([
             ':first_name' => $user->name()->first(),
             ':last_name' => $user->name()->last(),
             ':uuid' => (string)$user->uuid(),
             ':username' => $user->username(),
         ]);
-
     }
 
-    // Также добавим метод для получения
-        // пользователя по его UUID
     /**
      * @throws UserNotFoundException
      * @throws InvalidArgumentException
@@ -85,7 +92,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
                 "Cannot find user: $errorString"
             );
         }
-        // Создаём объект пользователя с полем username
+
         return new User(
             new UUID($result['uuid']),
             new Name($result['first_name'], $result['last_name']),

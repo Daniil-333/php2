@@ -4,7 +4,7 @@ namespace Geekbrains\App\Blog;
 
 use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 
-class UUID
+class UUID extends \Geekbrains\App\Blog\User
 {
         // Внутри объекта мы храним UUID как строку
     /**

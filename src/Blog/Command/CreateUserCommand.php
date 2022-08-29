@@ -32,9 +32,9 @@ class CreateUserCommand
     {
         $username = $arguments->get('username');
 
-// Проверяем, существует ли пользователь в репозитории
+        // Проверяем, существует ли пользователь в репозитории
         if ($this->userExists($username)) {
-// Бросаем исключение, если пользователь уже существует
+        // Бросаем исключение, если пользователь уже существует
             throw new CommandException("User already exists: $username");
         }
         // Сохраняем пользователя в репозиторий
