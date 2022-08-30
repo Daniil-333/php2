@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Geekbrains\App\Blog\Http;
+namespace Geekbrains\App\Http;
 
 
 class Request

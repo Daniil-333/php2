@@ -70,7 +70,9 @@ class SqlitePostsRepository implements PostsRepositoryInterface
                 "Cannot find post: $errorString"
             );
         }
-        $user = (new SqliteUsersRepository($this->connection))->get(new UUID($result['user_id']));
+
+        $userRepository = new SqliteUsersRepository($this->connection);
+        $user = $userRepository->get(new UUID($result['user_id']));
 
         return new Post(
             new UUID($result['uuid']),
