@@ -1,6 +1,6 @@
 <?php
 
-namespace  Geekbrains\App\Blog\Repositories\UnitTest\UsersRepository;
+namespace  Geekbrains\App\Blog\Repositories\UsersRepository\UnitTest\UsersRepository;
 
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\User;
@@ -19,14 +19,26 @@ class SqliteUsersRepositoryTest extends TestCase
     // когда запрашиваемый пользователь не найден
     public function testItThrowsAnExceptionWhenUserNotFound(): void
     {
+        // 2. Создаём стаб подключения
         $connectionMock = $this->createStub(PDO::class);
-        $connectionStub = $this->createMock(PDOStatement::class);
-        $connectionStub->method('fetch')->willReturn(false);
-        $connectionMock->method('prepare')->willReturn(false);
 
+        // 4. Стаб запроса
+        $connectionStub = $this->createStub(PDOStatement::class);
+
+        // 5. Стаб запроса будет возвращать false при вызове метода fetch
+        $connectionStub->method('fetch')->willReturn(false);
+
+        // 3. Стаб подключения будет возвращать другой стаб - стаб запроса - при вызове метода prepare
+        $connectionMock->method('prepare')->willReturn($connectionStub);
+
+        // 1. Передаём в репозиторий стаб подключения
         $repository = new SqliteUsersRepository($connectionMock);
+
+        // Ожидаем, что будет брошено исключение
         $this->expectException(UserNotFoundException::class);
         $this->expectExceptionMessage('Cannot find user: Ivan');
+
+        // Вызываем метод получения пользователя
         $repository->getByUsername('Ivan');
     }
 
@@ -63,7 +75,7 @@ class SqliteUsersRepositoryTest extends TestCase
             new User(   // Свойства пользователя точно такие, как и в описании мока
                 new UUID('c9e6813e-bae2-4140-96ac-8ddac672e13a'),
                 new Name('Ivan', 'Nikitin'),
-            'ivan123'
+            'admin'
             )
         );
     }

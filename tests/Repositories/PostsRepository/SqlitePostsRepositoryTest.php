@@ -1,6 +1,6 @@
 <?php
 
-namespace  Geekbrains\App\Blog\Repositories\UnitTest\PostsRepository;
+namespace  Geekbrains\App\Blog\Repositories\PostsRepository\UnitTest\PostsRepository;
 
 use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
@@ -17,9 +17,7 @@ use PDOStatement;
 class SqlitePostsRepositoryTest extends TestCase
 {
 
-    /**
-     * @throws InvalidArgumentException
-     */
+
     public function testItSavesPostToDatabase(): void
     {
 
@@ -64,16 +62,28 @@ class SqlitePostsRepositoryTest extends TestCase
         $statementMock = $this->createMock(\PDOStatement::class);
 
         //TODO соединить
+        $statementMockUser
+            ->expects($this->once())
+            ->method('execute')
+            ->with([
+                ':uuid' => '3b697686-01bf-433a-bf17-53ce84cb987b',
+                ':username' => 'ivan2',
+                ':first_name' => 'Ivan',
+                ':last_name' => 'Nikitin',
+            ]);
+
         $statementMock
             ->expects($this->once())
             ->method('execute')
             ->with([
                 ':uuid' => '6090c267-410f-456e-bd05-df6bb254c0a1',
                 ':user_id' => '3b697686-01bf-433a-bf17-53ce84cb987b',
-                ':title' => 'title',
-                ':text' => 'text',
+                ':title' => 'title2',
+                ':text' => 'text2',
             ]);
+
         $connectionStub->method('prepare')->willReturn($statementMock);
+
 
         $postRepository = new SqlitePostsRepository($connectionStub);
         $post = $postRepository->get(new UUID('6090c267-410f-456e-bd05-df6bb254c0a1'));
@@ -84,14 +94,14 @@ class SqlitePostsRepositoryTest extends TestCase
 
     public function testItThrowsAnExceptionWhenPostNotFound(): void
     {
-        $connectionMock = $this->createStub(PDO::class);
-        $connectionStub = $this->createMock(PDOStatement::class);
-        $connectionStub->method('fetch')->willReturn(false);
-        $connectionMock->method('prepare')->willReturn(false);
+        $connectionStub = $this->createStub(PDO::class);
+        $statementStub = $this->createStub(PDOStatement::class);
+        $statementStub->method('fetch')->willReturn(false);
+        $connectionStub->method('prepare')->willReturn($statementStub);
 
-//        $repository = new SqlitePostsRepository($connectionMock);
-//        $this->expectException(PostNotFoundException::class);
-//        $this->expectExceptionMessage('Cannot find post: 5625e275-8cfd-4573-82af-28b07401db60');
-//        $repository->get('5625e275-8cfd-4573-82af-28b07401db60');
+        $repository = new SqlitePostsRepository($connectionStub);
+        $this->expectException(PostNotFoundException::class);
+        $this->expectExceptionMessage('Cannot find post: 5625e275-8cfd-4573-82af-28b07401db60');
+        $repository->get(new UUID('5625e275-8cfd-4573-82af-28b07401db60'));
     }
 }
