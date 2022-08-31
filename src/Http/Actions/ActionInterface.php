@@ -2,8 +2,8 @@
 
 namespace Geekbrains\App\Http\Actions;
 
-use Geekbrains\App\http\Request;
-use Geekbrains\App\http\Response;
+use Geekbrains\App\Http\Request;
+use Geekbrains\App\Http\Response;
 
 interface ActionInterface
 {

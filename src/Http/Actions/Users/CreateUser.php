@@ -6,11 +6,11 @@ use Geekbrains\App\Blog\Exceptions\HttpException;
 use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\UUID;
-use Geekbrains\App\http\Actions\ActionInterface;
-use Geekbrains\App\http\ErrorResponse;
-use Geekbrains\App\http\Request;
-use Geekbrains\App\http\Response;
-use Geekbrains\App\http\SuccessfulResponse;
+use Geekbrains\App\Http\Actions\ActionInterface;
+use Geekbrains\App\Http\ErrorResponse;
+use Geekbrains\App\Http\Request;
+use Geekbrains\App\Http\Response;
+use Geekbrains\App\Http\SuccessfulResponse;
 use Geekbrains\App\Person\Name;
 
 class CreateUser implements ActionInterface

@@ -1,13 +1,16 @@
 <?php
 
-
-use Geekbrains\App\Blog\Exceptions\AppException;
+use Geekbrains\App\Blog\Exceptions\HttpException;
 use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use Geekbrains\App\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
+use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use Geekbrains\App\Http\Actions\Comments\CreateComment;
+use Geekbrains\App\Http\Actions\Posts\CreatePost;
 use Geekbrains\App\Http\Actions\Users\CreateUser;
 use Geekbrains\App\Http\Actions\Users\FindByUsername;
 use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
-use Geekbrains\App\Http\SuccessfulResponse;
+
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -24,6 +27,25 @@ $routes = [
     'POST' => [
         '/users/create' => new CreateUser(
             new SqliteUsersRepository(
+                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+            )
+        ),
+        '/posts/create' => new CreatePost(
+            new SqlitePostsRepository(
+                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+            ),
+            new SqliteUsersRepository(
+                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+            )
+        ),
+        '/posts/comment' => new CreateComment(
+            new SqliteCommentsRepository(
+                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+            ),
+            new SqliteUsersRepository(
+                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+            ),
+            new SqlitePostsRepository(
                 new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
             )
         ),

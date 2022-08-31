@@ -84,7 +84,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
      */
     private function getUser(PDOStatement $statement, string $errorString): User
     {
-        $statement->execute([(string)$errorString]);
+
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if ($result === false) {

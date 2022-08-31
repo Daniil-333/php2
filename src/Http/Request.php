@@ -2,7 +2,7 @@
 
 namespace Geekbrains\App\Http;
 
-use GeekBrains\App\Blog\Exceptions\HttpException;
+use Geekbrains\App\Blog\Exceptions\HttpException;
 use GeekBrains\App\Blog\Exceptions\JsonException;
 
 
@@ -23,18 +23,16 @@ class Request
      */
     public function method(): string
     {
-    // В суперглобальном массиве $_SERVER
-    // HTTP-метод хранится под ключом REQUEST_METHOD
+        // В суперглобальном массиве $_SERVER
+        // HTTP-метод хранится под ключом REQUEST_METHOD
         if (!array_key_exists('REQUEST_METHOD', $this->server)) {
-    // Если мы не можем получить метод - бросаем исключение
+            // Если мы не можем получить метод - бросаем исключение
             throw new HttpException('Cannot get method from the request');
         }
         return $this->server['REQUEST_METHOD'];
     }
 
-    // Метод для получения массива,
-// сформированного из json-форматированного
-// тела запроса
+    // Метод для получения массива, сформированного из json-форматированного тела запроса
     /**
      * @throws HttpException
      */
@@ -50,15 +48,14 @@ class Request
                 flags: JSON_THROW_ON_ERROR
             );
         } catch (JsonException) {
-            throw new HttpException("Cannot decode json body");
+            throw new JsonException("Cannot decode json body");
         }
         if (!is_array($data)) {
             throw new HttpException("Not an array/object in json body");
         }
         return $data;
     }
-// Метод для получения отдельного поля
-// из json-форматированного тела запроса
+    // Метод для получения отдельного поля из json-форматированного тела запроса
     /**
      * @throws HttpException
      */
@@ -99,8 +96,7 @@ class Request
         return $components['path'];
     }
 
-    // Метод для получения значения
-    // определённого параметра строки запроса
+    // Метод для получения значения определённого параметра строки запроса
     // Напрмер, для http://example.com/some/page?x=1&y=acb
     // значением параметра x будет строка '1'
     /**
@@ -125,8 +121,7 @@ class Request
         return $value;
     }
 
-    // Метод для получения значения
-    // определённого заголовка
+    // Метод для получения значения определённого заголовка
     /**
      * @throws HttpException
      */
