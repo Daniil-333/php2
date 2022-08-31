@@ -59,25 +59,25 @@ class SqlitePostsRepositoryTest extends TestCase
     public function testItGetPostByUuid(): void
     {
         $connectionStub = $this->createStub(\PDO::class);
-        $statementMock = $this->createMock(\PDOStatement::class);
-        $statementMockUser = $this->createMock(\PDOStatement::class);
+        $statementStubPost = $this->createStub(\PDOStatement::class);
+        $statementStubUser = $this->createStub(\PDOStatement::class);
 
         //TODO соединить
-        $statementMockUser->method('fetch')->willReturn([
-            ':uuid' => '3b697686-01bf-433a-bf17-53ce84cb987b',
-            ':username' => 'ivan2',
-            ':first_name' => 'Ivan',
-            ':last_name' => 'Nikitin',
+        $statementStubPost->method('fetch')->willReturn([
+            'uuid' => '6090c267-410f-456e-bd05-df6bb254c0a1',
+            'user_id' => '3b697686-01bf-433a-bf17-53ce84cb987b',
+            'title' => 'title2',
+            'text' => 'text2',
         ]);
 
-        $statementMock->method('fetch')->willReturn([
-            ':uuid' => '6090c267-410f-456e-bd05-df6bb254c0a1',
-            ':user_id' => '3b697686-01bf-433a-bf17-53ce84cb987b',
-            ':title' => 'title2',
-            ':text' => 'text2',
+        $statementStubUser->method('fetch')->willReturn([
+            'uuid' => '3b697686-01bf-433a-bf17-53ce84cb987b',
+            'username' => 'ivan2',
+            'first_name' => 'Ivan',
+            'last_name' => 'Nikitin',
         ]);
 
-        $connectionStub->method('prepare')->willReturn($statementMockUser, $statementMock);
+        $connectionStub->method('prepare')->willReturn($statementStubPost, $statementStubUser);
 
 
         $postRepository = new SqlitePostsRepository($connectionStub);
