@@ -34,7 +34,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             ':uuid' => (string)$comment->uuid(),
             ':user_id' => $comment->getUser()->uuid(),
             ':post_id' => $comment->getPost()->uuid(),
-            ':text' => (string)$comment,
+            ':text' => $comment->getText(),
         ]);
     }
 

@@ -25,12 +25,26 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     {
         // Подготавливаем запрос
         $statement = $this->connection->prepare(
-            'INSERT INTO posts (uuid, user_id, title, text) VALUES (:uuid, :user_id, :title, :text)'
+            'INSERT INTO posts (
+                        uuid, 
+                       user_id, 
+                       title, 
+                       text
+                   ) VALUES (
+                         :uuid, 
+                         :user_id, 
+                         :title, 
+                         :text
+                             )
+                    ON CONFLICT (uuid) DO UPDATE SET uuid = :uuid'
+
         );
+
         // Выполняем запрос с конкретными значениями
         $statement->execute([
             ':uuid' => (string)$post->uuid(),
-            ':user_id' => $post->getUser()->uuid(),
+//            ':user_id' => $post->getUser()->uuid(),
+            ':user_id' => $post->getUser(),
             ':title' => $post->getTitle(),
             ':text' => $post->getText(),
         ]);
@@ -82,4 +96,15 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         );
     }
 
+    /**
+     * @throws PostNotFoundException
+     */
+    public function delete(UUID $uuid): void
+    {
+        $statement = $this->connection->prepare(
+            'DELETE FROM posts WHERE uuid = ?'
+        );
+
+        $statement->execute([(string)$uuid]);
+    }
 }

@@ -6,6 +6,7 @@ use Geekbrains\App\Blog\Repositories\CommentsRepository\SqliteCommentsRepository
 use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use Geekbrains\App\Http\Actions\Comments\CreateComment;
 use Geekbrains\App\Http\Actions\Posts\CreatePost;
+use Geekbrains\App\Http\Actions\Posts\DeletePost;
 use Geekbrains\App\Http\Actions\Users\CreateUser;
 use Geekbrains\App\Http\Actions\Users\FindByUsername;
 use Geekbrains\App\Http\ErrorResponse;
@@ -50,6 +51,13 @@ $routes = [
             )
         ),
     ],
+    'DELETE' => [
+        '/posts' => new DeletePost(
+            new SqlitePostsRepository(
+                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+            )
+        )
+    ]
 
 ];
 

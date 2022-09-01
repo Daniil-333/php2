@@ -8,7 +8,7 @@ use Geekbrains\App\Blog\Exceptions\ArgumentsException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Repositories\UsersRepository\DummyUsersRepository;
 use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
-use MongoDB\Driver\Exception\CommandException;
+use Geekbrains\App\Blog\Exceptions\CommandException;
 use PHPUnit\Framework\TestCase;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\UUID;

@@ -2,15 +2,15 @@
 
 namespace Actions;
 
-use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
-use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
-use GeekBrains\LevelTwo\Blog\User;
-use GeekBrains\LevelTwo\Blog\UUID;
-use GeekBrains\LevelTwo\http\Actions\Users\FindByUsername;
-use GeekBrains\LevelTwo\http\ErrorResponse;
-use GeekBrains\LevelTwo\http\Request;
-use GeekBrains\LevelTwo\http\SuccessfulResponse;
-use GeekBrains\LevelTwo\Person\Name;
+use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
+use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
+use Geekbrains\App\Blog\User;
+use Geekbrains\App\Blog\UUID;
+use Geekbrains\App\http\Actions\Users\FindByUsername;
+use Geekbrains\App\http\ErrorResponse;
+use Geekbrains\App\http\Request;
+use Geekbrains\App\http\SuccessfulResponse;
+use Geekbrains\App\Person\Name;
 use PHPUnit\Framework\TestCase;
 
 class FindByUsernameActionTest extends TestCase
@@ -23,12 +23,10 @@ class FindByUsernameActionTest extends TestCase
      */
 
     // Тест, проверяющий, что будет возвращён неудачный ответ,
-// если в запросе нет параметра username
+    // если в запросе нет параметра username
     public function testItReturnsErrorResponseIfNoUsernameProvided(): void
     {
-        // Создаём объект запроса
-// Вместо суперглобальных переменных
-// передаём простые массивы
+        // Создаём объект запроса Вместо суперглобальных переменных передаём простые массивы
         $request = new Request([], [], "");
 
         // Создаём стаб репозитория пользователей
@@ -40,15 +38,17 @@ class FindByUsernameActionTest extends TestCase
         $this->expectOutputString('{"success":false,"reason":"No such query param in the request: username"}');
         $response->send();
     }
+
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
     public function testItReturnsErrorResponseIfUserNotFound(): void
     {
-// Теперь запрос будет иметь параметр username
+        // Теперь запрос будет иметь параметр username
         $request = new Request(['username' => 'ivan'], [], '');
-// Репозиторий пользователей по-прежнему пуст
+
+        // Репозиторий пользователей по-прежнему пуст
         $usersRepository = $this->usersRepository([]);
         $action = new FindByUsername($usersRepository);
         $response = $action->handle($request);
@@ -61,13 +61,13 @@ class FindByUsernameActionTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-// Тест, проверяющий, что будет возвращён удачный ответ,
-// если пользователь найден
+    // Тест, проверяющий, что будет возвращён удачный ответ,
+    // если пользователь найден
     public function testItReturnsSuccessfulResponse(): void
 
     {
         $request = new Request(['username' => 'ivan'], [], '');
-// На этот раз в репозитории есть нужный нам пользователь
+        // На этот раз в репозитории есть нужный нам пользователь
         $usersRepository = $this->usersRepository([
             new User(
                 UUID::random(),
@@ -78,17 +78,17 @@ class FindByUsernameActionTest extends TestCase
         ]);
         $action = new FindByUsername($usersRepository);
         $response = $action->handle($request);
-// Проверяем, что ответ - удачный
+        // Проверяем, что ответ - удачный
         $this->assertInstanceOf(SuccessfulResponse::class, $response);
         $this->expectOutputString('{"success":true,"data":{"username":"ivan","name":"Ivan Nikitin"}}');
         $response->send();
     }
 
     // Функция, создающая стаб репозитория пользователей,
-// принимает массив "существующих" пользователей
+    // принимает массив "существующих" пользователей
     private function usersRepository(array $users): UsersRepositoryInterface
     {
-// В конструктор анонимного класса передаём массив пользователей
+        // В конструктор анонимного класса передаём массив пользователей
         return new class($users) implements UsersRepositoryInterface {
             public function __construct(
                 private array $users
