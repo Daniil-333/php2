@@ -33,7 +33,7 @@ class CreatePost implements ActionInterface
         }
 
         try {
-            $this->usersRepository->get($authorUuid);
+            $user = $this->usersRepository->get($authorUuid);
         } catch (UserNotFoundException $e) {
             return new ErrorResponse($e->getMessage());
         }
@@ -43,7 +43,7 @@ class CreatePost implements ActionInterface
         try {
             $post = new Post(
                 $newPostUuid,
-                $authorUuid,
+                $user,
                 $request->jsonBodyField('title'),
                 $request->jsonBodyField('text')
             );

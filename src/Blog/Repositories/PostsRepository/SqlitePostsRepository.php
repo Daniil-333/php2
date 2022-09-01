@@ -41,10 +41,10 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         );
 
         // Выполняем запрос с конкретными значениями
+//        var_dump($post->getUser()->);
         $statement->execute([
             ':uuid' => (string)$post->uuid(),
-//            ':user_id' => $post->getUser()->uuid(),
-            ':user_id' => $post->getUser(),
+            ':user_id' => (string)$post->getUser()->uuid(),
             ':title' => $post->getTitle(),
             ':text' => $post->getText(),
         ]);
