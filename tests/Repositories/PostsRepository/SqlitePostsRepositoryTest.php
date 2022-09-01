@@ -1,10 +1,8 @@
 <?php
 
-namespace  Geekbrains\App\Blog\Repositories\PostsRepository\UnitTest\PostsRepository;
+namespace Geekbrains\App\UnitTests\Repositories\PostsRepository;
 
-use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
-use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\Post;

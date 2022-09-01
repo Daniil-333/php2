@@ -1,6 +1,6 @@
 <?php
 
-namespace  Geekbrains\App\Blog\UnitTest\Commands;
+namespace Geekbrains\App\UnitTests\Commands;
 
 use Geekbrains\App\Blog\Command\Arguments;
 use Geekbrains\App\Blog\Command\CreateUserCommand;

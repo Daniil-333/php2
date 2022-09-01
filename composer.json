@@ -6,6 +6,11 @@
             "Geekbrains\\App\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Geekbrains\\App\\UnitTests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "daniel"

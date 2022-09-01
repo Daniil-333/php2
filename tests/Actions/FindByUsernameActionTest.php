@@ -1,6 +1,6 @@
 <?php
 
-namespace Actions;
+namespace Geekbrains\App\UnitTests\Actions;
 
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
