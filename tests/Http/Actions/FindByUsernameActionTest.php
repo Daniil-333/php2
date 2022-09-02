@@ -1,12 +1,12 @@
 <?php
 
-namespace Geekbrains\App\UnitTests\Actions;
+namespace Geekbrains\App\UnitTests\Http\Actions;
 
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\UUID;
-use Geekbrains\App\http\Actions\Users\FindByUsername;
+use Geekbrains\App\Http\Actions\FindByUsername;
 use Geekbrains\App\http\ErrorResponse;
 use Geekbrains\App\http\Request;
 use Geekbrains\App\http\SuccessfulResponse;

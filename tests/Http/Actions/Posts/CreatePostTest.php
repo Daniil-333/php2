@@ -1,6 +1,6 @@
 <?php
 
-namespace Geekbrains\App\UnitTests\Actions\Posts;
+namespace Geekbrains\App\UnitTests\Http\Actions\Posts;
 
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;

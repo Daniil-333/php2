@@ -1,6 +1,6 @@
 <?php
 
-namespace Geekbrains\App\UnitTests\Repositories\PostsRepository;
+namespace Geekbrains\App\UnitTests\Blog\Repositories\PostsRepository;
 
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
 use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;

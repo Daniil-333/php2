@@ -1,6 +1,6 @@
 <?php
 
-namespace Geekbrains\App\UnitTests\Commands;
+namespace Geekbrains\App\UnitTests\Blog\Command;
 
 use Geekbrains\App\Blog\Command\Arguments;
 use Geekbrains\App\Blog\Exceptions\ArgumentsException;
