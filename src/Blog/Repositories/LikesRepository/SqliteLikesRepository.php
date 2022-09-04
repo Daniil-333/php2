@@ -2,8 +2,7 @@
 
 namespace Geekbrains\App\Blog\Repositories\LikesRepository;
 
-use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
-use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
+use Geekbrains\App\Blog\Exceptions\LikeFoundException;
 use Geekbrains\App\Blog\Like;
 use Geekbrains\App\Blog\UUID;
 
@@ -40,38 +39,48 @@ class SqliteLikesRepository implements LikesRepositoryInterface
         ]);
     }
 
-/*    public function getByUsername(string $username): User
+    public function getByPostUuid(UUID $uuid): array
     {
         $statement = $this->connection->prepare(
-            'SELECT * FROM users WHERE username = :username'
+            'SELECT * FROM likes WHERE uuidPost LIKE (:uuidPost)'
         );
+
         $statement->execute([
-            ':username' => $username,
+            ':uuidPost' => $uuid,
         ]);
 
-       return $this->getUser($statement, $username);
-    }
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-    private function getUser(PDOStatement $statement, string $errorString): User
-    {
+        $likes = [];
 
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
-
-        if ($result === false) {
-            throw new UserNotFoundException(
-                "Cannot find user: $errorString"
+        foreach ($result as $like) {
+            $likes[] = new Like(
+                new UUID($like['uuid']),
+                new UUID($like['uuidPost']),
+                new UUID($like['uuidUser']),
             );
         }
 
-        return new User(
-            new UUID($result['uuid']),
-            new Name($result['first_name'], $result['last_name']),
-            $result['username'],
-        );
-    }*/
+        return $likes;
+    }
 
-    public function getByPostUuid(UUID $uuid): int
+    public function getByUserUuid(string $uuidUser): bool
     {
-        // TODO: Implement getByPostUuid() method.
+        $statement = $this->connection->prepare(
+            'SELECT uuidPost FROM likes WHERE uuidUser LIKE (:uuidUser)'
+        );
+
+        $statement->execute([
+            ':uuidUser' => $uuidUser,
+        ]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($result !== false) {
+            throw new LikeFoundException(
+                "Like already exist by user $uuidUser at post {$result['uuidPost']}"
+            );
+        }
+
+        return true;
     }
 }

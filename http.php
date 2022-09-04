@@ -48,7 +48,7 @@ $routes = [
         '/likes/create' => CreateLike::class
     ],
     'DELETE' => [
-        '/posts' => new DeletePost::class
+        '/posts' => DeletePost::class
     ]
 
 ];

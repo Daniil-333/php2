@@ -23,7 +23,7 @@ class FindByUuid implements ActionInterface
     public function handle(Request $request): Response
     {
         try {
-            $postUuid = new UUID($request->jsonBodyField('post_uuid'));
+            $postUuid = new UUID($request->query('post_uuid'));
         } catch (HttpException | InvalidArgumentException $e) {
             return new ErrorResponse($e->getMessage());
         }

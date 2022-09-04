@@ -4,10 +4,10 @@ namespace Geekbrains\App\Http\Actions\Likes;
 
 use Geekbrains\App\Blog\Exceptions\HttpException;
 use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
+use Geekbrains\App\Blog\Exceptions\LikeFoundException;
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Like;
-use Geekbrains\App\Blog\Post;
 use Geekbrains\App\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
 use Geekbrains\App\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
@@ -43,9 +43,7 @@ class CreateLike implements ActionInterface
             return new ErrorResponse($e->getMessage());
         }
 
-
         $newLikeUuid = UUID::random();
-
         try {
             $like = new Like(
                 $newLikeUuid,
@@ -53,6 +51,12 @@ class CreateLike implements ActionInterface
                 $userUuid
             );
         }catch (HttpException $e) {
+            return new ErrorResponse($e->getMessage());
+        }
+
+        try {
+            $this->likesRepository->getByUserUuid($userUuid);
+        }catch (LikeFoundException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
