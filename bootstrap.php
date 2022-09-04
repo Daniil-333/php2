@@ -3,6 +3,8 @@
 use Geekbrains\App\Blog\Container\DIContainer;
 use Geekbrains\App\Blog\Repositories\CommentsRepository\CommentsRepositoryInterface;
 use Geekbrains\App\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
+use Geekbrains\App\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
+use Geekbrains\App\Blog\Repositories\LikesRepository\SqliteLikesRepository;
 use Geekbrains\App\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
@@ -35,6 +37,11 @@ $container->bind(
 $container->bind(
     CommentsRepositoryInterface::class,
     SqliteCommentsRepository::class
+);
+
+$container->bind(
+    LikesRepositoryInterface::class,
+    SqliteLikesRepository::class
 );
 
 // Возвращаем объект контейнера

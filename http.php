@@ -3,6 +3,7 @@
 use Geekbrains\App\Blog\Exceptions\AppException;
 use Geekbrains\App\Blog\Exceptions\HttpException;
 use Geekbrains\App\Http\Actions\Comments\CreateComment;
+use Geekbrains\App\Http\Actions\Likes\CreateLike;
 use Geekbrains\App\Http\Actions\Posts\CreatePost;
 use Geekbrains\App\Http\Actions\Posts\DeletePost;
 use Geekbrains\App\Http\Actions\Posts\FindByUuid;
@@ -43,7 +44,8 @@ $routes = [
     'POST' => [
         '/users/create' => CreateUser::class,
         '/posts/create' => CreatePost::class,
-        '/posts/comment' => CreateComment::class
+        '/posts/comment' => CreateComment::class,
+        '/likes/create' => CreateLike::class
     ],
     'DELETE' => [
         '/posts' => new DeletePost::class
