@@ -55,7 +55,7 @@ class CreateLike implements ActionInterface
         }
 
         try {
-            $this->likesRepository->getByUserUuid($userUuid);
+            $this->likesRepository->getByUserUuid($userUuid, $postUuid);
         }catch (LikeFoundException $e) {
             return new ErrorResponse($e->getMessage());
         }

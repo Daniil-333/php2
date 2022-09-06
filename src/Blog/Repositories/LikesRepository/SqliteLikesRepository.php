@@ -42,7 +42,7 @@ class SqliteLikesRepository implements LikesRepositoryInterface
     public function getByPostUuid(UUID $uuid): array
     {
         $statement = $this->connection->prepare(
-            'SELECT * FROM likes WHERE uuidPost LIKE (:uuidPost)'
+            'SELECT * FROM likes WHERE uuidPost = :uuidPost'
         );
 
         $statement->execute([
@@ -50,6 +50,12 @@ class SqliteLikesRepository implements LikesRepositoryInterface
         ]);
 
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+            throw new LikeFoundException(
+                "Likes at post $uuid not found"
+            );
+        }
 
         $likes = [];
 
@@ -64,14 +70,17 @@ class SqliteLikesRepository implements LikesRepositoryInterface
         return $likes;
     }
 
-    public function getByUserUuid(string $uuidUser): bool
+    public function getByUserUuid(string $uuidUser, string $uuidPost): void
     {
         $statement = $this->connection->prepare(
-            'SELECT uuidPost FROM likes WHERE uuidUser LIKE (:uuidUser)'
+            'SELECT uuidPost FROM likes 
+                        WHERE uuidUser = :uuidUser 
+                          AND uuidPost = :uuidPost'
         );
 
         $statement->execute([
             ':uuidUser' => $uuidUser,
+            ':uuidPost' => $uuidPost
         ]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -80,7 +89,5 @@ class SqliteLikesRepository implements LikesRepositoryInterface
                 "Like already exist by user $uuidUser at post {$result['uuidPost']}"
             );
         }
-
-        return true;
     }
 }
