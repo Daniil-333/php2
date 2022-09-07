@@ -14,12 +14,14 @@ use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
 use Geekbrains\App\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 class CreatePost implements ActionInterface
 {
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
         private UsersRepositoryInterface $usersRepository,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -52,6 +54,9 @@ class CreatePost implements ActionInterface
         }
 
         $this->postsRepository->save($post);
+
+        // Логируем UUID новой статьи
+        $this->logger->info("Post created: $newPostUuid");
 
         return new SuccessfulResponse([
             'uuid' => (string)$newPostUuid,

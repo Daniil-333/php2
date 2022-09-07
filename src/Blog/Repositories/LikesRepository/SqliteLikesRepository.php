@@ -2,7 +2,9 @@
 
 namespace Geekbrains\App\Blog\Repositories\LikesRepository;
 
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\LikeFoundException;
+use Geekbrains\App\Blog\Exceptions\LikeNotFoundException;
 use Geekbrains\App\Blog\Like;
 use Geekbrains\App\Blog\UUID;
 
@@ -39,6 +41,9 @@ class SqliteLikesRepository implements LikesRepositoryInterface
         ]);
     }
 
+    /**
+     * @throws LikeNotFoundException | InvalidArgumentException
+     */
     public function getByPostUuid(UUID $uuid): array
     {
         $statement = $this->connection->prepare(
@@ -52,7 +57,7 @@ class SqliteLikesRepository implements LikesRepositoryInterface
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if ($result === false) {
-            throw new LikeFoundException(
+            throw new LikeNotFoundException(
                 "Likes at post $uuid not found"
             );
         }
@@ -70,6 +75,9 @@ class SqliteLikesRepository implements LikesRepositoryInterface
         return $likes;
     }
 
+    /**
+     * @throws LikeFoundException
+     */
     public function getByUserUuid(string $uuidUser, string $uuidPost): void
     {
         $statement = $this->connection->prepare(

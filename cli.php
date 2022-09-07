@@ -7,15 +7,19 @@ use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use Geekbrains\App\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use Geekbrains\App\Blog\UUID;
+use Psr\Log\LoggerInterface;
 
 $container = require __DIR__ . "./bootstrap.php";
 
-$command = $container->get(CreateUserCommand::class);;
+$command = $container->get(CreateUserCommand::class);
+
+// Получаем объект логгера из контейнера
+$logger = $container->get(LoggerInterface::class);
 
 try {
     $command->handle(Arguments::fromArgv($argv));
 } catch (AppException $e) {
-    echo $e->getMessage();
+    $logger->error($e->getMessage(), ['exception' => $e]);
 }
 
 
