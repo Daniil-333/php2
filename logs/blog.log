@@ -1,0 +1,7 @@
+[2022-09-07T07:07:54.821590+00:00] blog.NOTICE: Route not found: POST /post/create [] []
+[2022-09-07T07:08:28.213320+00:00] blog.NOTICE: Route not found: POST /post/create [] []
+[2022-09-07T07:14:39.719187+00:00] blog.NOTICE: Route not found: POST /post/create [] []
+[2022-09-07T07:15:09.791601+00:00] blog.NOTICE: Route not found: POST /post/create [] []
+[2022-09-07T07:15:25.138748+00:00] blog.NOTICE: Route not found: POST /post/create [] []
+[2022-09-07T07:16:01.092742+00:00] blog.NOTICE: Route not found: POST /post/create [] []
+[2022-09-07T07:16:28.962205+00:00] blog.INFO: Post created: 66f950fc-33d4-42a0-8cbd-e3660ab1b345 [] []
