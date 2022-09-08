@@ -12,11 +12,12 @@ use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
 use Geekbrains\App\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 class DeletePost implements ActionInterface
 {
     public function __construct(
-        private PostsRepositoryInterface $postsRepository,
+        private PostsRepositoryInterface $postsRepository
     ) {
     }
 
@@ -34,11 +35,7 @@ class DeletePost implements ActionInterface
             return new ErrorResponse($e->getMessage());
         }
 
-        try {
-            $this->postsRepository->delete($postUuid);
-        } catch (PostNotFoundException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
+        $this->postsRepository->delete($postUuid);
 
         return new SuccessfulResponse([
             'uuid' => (string)$postUuid,

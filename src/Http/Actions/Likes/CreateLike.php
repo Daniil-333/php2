@@ -17,13 +17,14 @@ use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
 use Geekbrains\App\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 class CreateLike implements ActionInterface
 {
     public function __construct(
         private LikesRepositoryInterface $likesRepository,
         private PostsRepositoryInterface $postsRepository,
-        private UsersRepositoryInterface $usersRepository,
+        private UsersRepositoryInterface $usersRepository
     ) {
     }
 
@@ -38,6 +39,11 @@ class CreateLike implements ActionInterface
 
         try {
             $this->postsRepository->get($postUuid);
+        } catch (PostNotFoundException|UserNotFoundException $e) {
+            return new ErrorResponse($e->getMessage());
+        }
+
+        try {
             $this->usersRepository->get($userUuid);
         } catch (PostNotFoundException|UserNotFoundException $e) {
             return new ErrorResponse($e->getMessage());

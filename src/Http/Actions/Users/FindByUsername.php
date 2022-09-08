@@ -10,6 +10,7 @@ use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
 use Geekbrains\App\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 class FindByUsername implements ActionInterface
 {
@@ -35,11 +36,11 @@ class FindByUsername implements ActionInterface
 
 
         try {
-    // Пытаемся найти пользователя в репозитории
+        // Пытаемся найти пользователя в репозитории
             $user = $this->usersRepository->getByUsername($username);
         } catch (UserNotFoundException $e) {
-    // Если пользователь не найден -
-    // возвращаем неуспешный ответ
+        // Если пользователь не найден -
+        // возвращаем неуспешный ответ
             return new ErrorResponse($e->getMessage());
         }
 

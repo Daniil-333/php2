@@ -14,7 +14,6 @@ class DummyUsersRepository implements UsersRepositoryInterface
 
     public function save(User $user): void
     {
-        // TODO: Implement save() method.
     }
 
     public function get(UUID $uuid): User

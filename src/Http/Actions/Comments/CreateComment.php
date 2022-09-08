@@ -14,13 +14,14 @@ use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
 use Geekbrains\App\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 class CreateComment implements ActionInterface
 {
     public function __construct(
         private CommentsRepositoryInterface $commentsRepository,
         private UsersRepositoryInterface $usersRepository,
-        private PostsRepositoryInterface $postsRepository,
+        private PostsRepositoryInterface $postsRepository
     ) {
     }
 
@@ -29,18 +30,20 @@ class CreateComment implements ActionInterface
         try {
             $authorUuid = new UUID($request->jsonBodyField('author_uuid'));
             $post_uuid = new UUID($request->jsonBodyField('post_uuid'));
-
         } catch (HttpException | InvalidArgumentException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
         try {
             $user = $this->usersRepository->get($authorUuid);
-            $post = $this->postsRepository->get($post_uuid);
-
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
+        }
 
+        try {
+            $post = $this->postsRepository->get($post_uuid);
+        } catch (HttpException $e) {
+            return new ErrorResponse($e->getMessage());
         }
 
         $newCommentUuid = UUID::random();

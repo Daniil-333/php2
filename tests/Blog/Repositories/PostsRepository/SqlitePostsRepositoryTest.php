@@ -8,6 +8,7 @@ use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\Post;
 use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Person\Name;
+use Geekbrains\App\UnitTests\DummyLogger;
 use PHPUnit\Framework\TestCase;
 use PDO;
 use PDOStatement;
@@ -42,7 +43,7 @@ class SqlitePostsRepositoryTest extends TestCase
             ]);
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $repository = new SqlitePostsRepository($connectionStub);
+        $repository = new SqlitePostsRepository($connectionStub, new DummyLogger());
 
         $repository->save(
             new Post(
@@ -78,7 +79,7 @@ class SqlitePostsRepositoryTest extends TestCase
         $connectionStub->method('prepare')->willReturn($statementStubPost, $statementStubUser);
 
 
-        $postRepository = new SqlitePostsRepository($connectionStub);
+        $postRepository = new SqlitePostsRepository($connectionStub, new DummyLogger());
         $post = $postRepository->get(new UUID('6090c267-410f-456e-bd05-df6bb254c0a1'));
 
         $this->assertSame('6090c267-410f-456e-bd05-df6bb254c0a1', (string)$post->uuid());
@@ -92,7 +93,7 @@ class SqlitePostsRepositoryTest extends TestCase
         $statementStub->method('fetch')->willReturn(false);
         $connectionStub->method('prepare')->willReturn($statementStub);
 
-        $repository = new SqlitePostsRepository($connectionStub);
+        $repository = new SqlitePostsRepository($connectionStub, new DummyLogger());
         $this->expectException(PostNotFoundException::class);
         $this->expectExceptionMessage('Cannot find post: 5625e275-8cfd-4573-82af-28b07401db60');
         $repository->get(new UUID('5625e275-8cfd-4573-82af-28b07401db60'));

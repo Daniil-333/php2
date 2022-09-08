@@ -12,6 +12,7 @@ use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
 use Geekbrains\App\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 class FindByUuid implements ActionInterface
 {

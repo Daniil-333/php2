@@ -12,11 +12,13 @@ use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
 use Geekbrains\App\Http\SuccessfulResponse;
 use Geekbrains\App\Person\Name;
+use Psr\Log\LoggerInterface;
 
 class CreateUser implements ActionInterface
 {
+
     public function __construct(
-        private UsersRepositoryInterface $usersRepository,
+        private UsersRepositoryInterface $usersRepository
     ) {
     }
 
@@ -36,7 +38,6 @@ class CreateUser implements ActionInterface
 
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
-
         }
 
         $this->usersRepository->save($user);

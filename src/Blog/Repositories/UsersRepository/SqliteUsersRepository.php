@@ -9,18 +9,23 @@ use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Person\Name;
 use \PDO;
 use \PDOStatement;
+use Psr\Log\LoggerInterface;
 
 class SqliteUsersRepository implements UsersRepositoryInterface
 {
     private PDO $connection;
+    private LoggerInterface $logger;
 
-    public function __construct(PDO $connection)
+    public function __construct(PDO $connection, LoggerInterface $logger)
     {
         $this->connection = $connection;
+        $this->logger = $logger;
     }
 
     public function save(User $user): void
     {
+        $this->logger->info("Create user command started");
+
         $statement = $this->connection->prepare(
             'INSERT INTO users (
                        first_name, 
@@ -39,12 +44,16 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
         );
 
+        $newUserUuid = (string)$user->uuid();
+
         $statement->execute([
             ':first_name' => $user->name()->first(),
             ':last_name' => $user->name()->last(),
-            ':uuid' => (string)$user->uuid(),
+            ':uuid' => $newUserUuid,
             ':username' => $user->username(),
         ]);
+
+        $this->logger->info("User created: $newUserUuid");
     }
 
     /**
@@ -88,6 +97,8 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if ($result === false) {
+            $this->logger->warning("User with username {$errorString} not found");
+
             throw new UserNotFoundException(
                 "Cannot find user: $errorString"
             );

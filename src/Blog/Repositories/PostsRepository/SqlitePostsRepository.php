@@ -10,20 +10,24 @@ use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use Geekbrains\App\Blog\UUID;
 use \PDO;
 use \PDOStatement;
+use Psr\Log\LoggerInterface;
 
 class SqlitePostsRepository implements PostsRepositoryInterface
 {
     private PDO $connection;
+    private LoggerInterface $logger;
 
-    public function __construct(PDO $connection)
+    public function __construct(PDO $connection, LoggerInterface $logger)
     {
         $this->connection = $connection;
+        $this->logger = $logger;
     }
 
 
     public function save(Post $post): void
     {
-        // Подготавливаем запрос
+        $this->logger->info("Create post command started");
+
         $statement = $this->connection->prepare(
             'INSERT INTO posts (
                         uuid, 
@@ -40,18 +44,17 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
         );
 
-        // Выполняем запрос с конкретными значениями
-//        var_dump($post->getUser()->);
+        $newPostUuid = (string)$post->uuid();
+
         $statement->execute([
-            ':uuid' => (string)$post->uuid(),
+            ':uuid' => $newPostUuid,
             ':user_id' => (string)$post->getUser()->uuid(),
             ':title' => $post->getTitle(),
             ':text' => $post->getText(),
         ]);
 
+        $this->logger->info("Post created with UUID: $newPostUuid");
     }
-
-    // Метод для получения статьи по её UUID
 
     /**
      * @throws UserNotFoundException
@@ -60,7 +63,6 @@ class SqlitePostsRepository implements PostsRepositoryInterface
      */
     public function get(UUID $uuid): Post
     {
-
         $statement = $this->connection->prepare(
             'SELECT * FROM posts WHERE uuid = ?'
         );
@@ -80,12 +82,14 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($result === false) {
+            $this->logger->warning("Post not found with UUID: $errorString");
+
             throw new PostNotFoundException(
                 "Cannot find post: $errorString"
             );
         }
 
-        $userRepository = new SqliteUsersRepository($this->connection);
+        $userRepository = new SqliteUsersRepository($this->connection, $this->logger);
         $user = $userRepository->get(new UUID($result['user_id']));
 
         return new Post(
@@ -101,10 +105,14 @@ class SqlitePostsRepository implements PostsRepositoryInterface
      */
     public function delete(UUID $uuid): void
     {
+        $this->logger->info("Delete post command started");
+
         $statement = $this->connection->prepare(
             'DELETE FROM posts WHERE uuid = ?'
         );
 
         $statement->execute([(string)$uuid]);
+
+        $this->logger->info("Post deleted: $uuid");
     }
 }

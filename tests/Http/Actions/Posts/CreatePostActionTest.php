@@ -2,6 +2,8 @@
 
 namespace Geekbrains\App\UnitTests\Http\Actions\Posts;
 
+use Geekbrains\App\Blog\Exceptions\AuthException;
+use Geekbrains\App\Blog\Exceptions\HttpException;
 use Geekbrains\App\Blog\Exceptions\JsonException;
 use Geekbrains\App\Blog\Exceptions\PostNotFoundException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
@@ -11,6 +13,7 @@ use Geekbrains\App\Blog\Post;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Http\Actions\Posts\CreatePost;
+use Geekbrains\App\Http\Auth\IdentificationInterface;
 use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\SuccessfulResponse;
@@ -88,6 +91,30 @@ class CreatePostActionTest extends TestCase
         };
     }
 
+    private function identification(UsersRepositoryInterface $usersRepository): IdentificationInterface
+    {
+        return new class($usersRepository) implements IdentificationInterface {
+            public function __construct(
+                private UsersRepositoryInterface $usersRepository
+            )
+            {
+            }
+            public function user(Request $request): User
+            {
+                try {
+                    $userUuid = $request->jsonBodyField('author_uuid');
+                } catch (HttpException $e) {
+                    throw new AuthException($e->getMessage());
+                }
+                try {
+                    return $this->usersRepository->get(new UUID($userUuid));
+                } catch (UserNotFoundException $e) {
+                    throw new AuthException($e->getMessage());
+                }
+            }
+        };
+    }
+
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -97,8 +124,8 @@ class CreatePostActionTest extends TestCase
     {
         $request = new Request([], [], '{
             "author_uuid": "c9e6813e-bae2-4140-96ac-8ddac672e13a",
-            "text": "some text",
-            "title": "some title"
+            "title": "title_test",
+            "text": "text_test"
             }');
 
         $usersRepository = $this->usersRepository([
@@ -114,14 +141,33 @@ class CreatePostActionTest extends TestCase
                 new UUID('a1e3253e-bae2-4140-96ac-8ddac672e55b'),
                 $usersRepository->get(new UUID('c9e6813e-bae2-4140-96ac-8ddac672e13a')),
                 'title_test',
-                'text_test',
+                'text_test'
             ),
         ]);
-        $action = new CreatePost($postRepository, $usersRepository, new DummyLogger());
+
+        $identification = $this->identification($usersRepository);
+
+        $action = new CreatePost($postRepository, $identification);
+
         $response = $action->handle($request);
 
         $this->assertInstanceOf(SuccessfulResponse::class, $response);
-        $this->expectOutputString('{"success":true,"data":{"uuid":"c9e3253e-bae2-4140-96ac-8ddac672e10r"}}');
+
+        $this->setOutputCallback(function ($data){
+            $dataDecode = json_decode(
+                $data,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR
+            );
+
+            $dataDecode['data']['uuid'] = "a1e3253e-bae2-4140-96ac-8ddac672e55b";
+            return json_encode(
+                $dataDecode,
+                JSON_THROW_ON_ERROR
+            );
+        });
+
+        $this->expectOutputString('{"success":true,"data":{"uuid":"a1e3253e-bae2-4140-96ac-8ddac672e55b"}}');
         $response->send();
     }
 
@@ -133,10 +179,11 @@ class CreatePostActionTest extends TestCase
     {
         $request = new Request([], [], '{"author_uuid":"10373537-0805-4d7a-830e-22b481b4859c","title":"title","text":"text"}');
 
-        $postsRepository = $this->postsRepository();
+        $postsRepository = $this->postsRepository([]);
         $usersRepository = $this->usersRepository([]);
+        $identification = $this->identification($usersRepository);
 
-        $action = new CreatePost($postsRepository, $usersRepository, new DummyLogger());
+        $action = new CreatePost($postsRepository, $identification);
 
         $response = $action->handle($request);
 
@@ -162,8 +209,9 @@ class CreatePostActionTest extends TestCase
                 new Name('Ivan', 'Nikitin'), 'ivan',
             ),
         ]);
+        $identification = $this->identification($usersRepository);
 
-        $action = new CreatePost($postsRepository, $usersRepository, new DummyLogger());
+        $action = new CreatePost($postsRepository, $identification);
 
         $response = $action->handle($request);
 

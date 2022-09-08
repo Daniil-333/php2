@@ -57,6 +57,7 @@ class CreateUserCommand
         // Логируем информацию о новом пользователе
         $this->logger->info("User created: $uuid");
     }
+
     private function userExists(string $username): bool
     {
         try {
@@ -67,7 +68,4 @@ class CreateUserCommand
         }
         return true;
     }
-
-
-
 }

@@ -6,6 +6,7 @@ use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Person\Name;
+use Geekbrains\App\UnitTests\DummyLogger;
 use PHPUnit\Framework\TestCase;
 use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use PDO;
@@ -32,7 +33,7 @@ class SqliteUsersRepositoryTest extends TestCase
         $connectionMock->method('prepare')->willReturn($connectionStub);
 
         // 1. Передаём в репозиторий стаб подключения
-        $repository = new SqliteUsersRepository($connectionMock);
+        $repository = new SqliteUsersRepository($connectionMock, new DummyLogger());
 
         // Ожидаем, что будет брошено исключение
         $this->expectException(UserNotFoundException::class);
@@ -68,7 +69,7 @@ class SqliteUsersRepositoryTest extends TestCase
         $connectionStub->method('prepare')->willReturn($statementMock);
 
         // 1. Передаём в репозиторий стаб подключения
-        $repository = new SqliteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub, new DummyLogger());
 
         // Вызываем метод сохранения пользователя
         $repository->save(
