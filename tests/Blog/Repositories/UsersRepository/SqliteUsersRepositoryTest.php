@@ -59,9 +59,10 @@ class SqliteUsersRepositoryTest extends TestCase
             ->method('execute') // метод execute
             ->with([ // с единственным аргументом - массивом
                 ':uuid' => 'c9e6813e-bae2-4140-96ac-8ddac672e13a',
-                ':username' => 'admin',
                 ':first_name' => 'Ivan',
                 ':last_name' => 'Nikitin',
+                ':username' => 'admin',
+                ':password' => 'password'
             ]);
 
         // 3. При вызове метода prepare стаб подключения
@@ -76,7 +77,8 @@ class SqliteUsersRepositoryTest extends TestCase
             new User(   // Свойства пользователя точно такие, как и в описании мока
                 new UUID('c9e6813e-bae2-4140-96ac-8ddac672e13a'),
                 new Name('Ivan', 'Nikitin'),
-            'admin'
+            'admin',
+            'password'
             )
         );
     }

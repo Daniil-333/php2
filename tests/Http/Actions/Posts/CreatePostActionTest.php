@@ -18,7 +18,6 @@ use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\SuccessfulResponse;
 use Geekbrains\App\Person\Name;
-use Geekbrains\App\UnitTests\DummyLogger;
 use PHPUnit\Framework\TestCase;
 
 class CreatePostActionTest extends TestCase
@@ -101,16 +100,16 @@ class CreatePostActionTest extends TestCase
             }
             public function user(Request $request): User
             {
-                try {
+//                try {
                     $userUuid = $request->jsonBodyField('author_uuid');
-                } catch (HttpException $e) {
-                    throw new AuthException($e->getMessage());
-                }
-                try {
+//                } catch (HttpException $e) {
+//                    throw new AuthException($e->getMessage());
+//                }
+//                try {
                     return $this->usersRepository->get(new UUID($userUuid));
-                } catch (UserNotFoundException $e) {
-                    throw new AuthException($e->getMessage());
-                }
+//                } catch (UserNotFoundException $e) {
+//                    throw new AuthException($e->getMessage());
+//                }
             }
         };
     }
@@ -181,6 +180,7 @@ class CreatePostActionTest extends TestCase
 
         $postsRepository = $this->postsRepository([]);
         $usersRepository = $this->usersRepository([]);
+
         $identification = $this->identification($usersRepository);
 
         $action = new CreatePost($postsRepository, $identification);

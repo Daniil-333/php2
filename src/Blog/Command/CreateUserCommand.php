@@ -16,9 +16,8 @@ use Psr\Log\LoggerInterface;
 
 class CreateUserCommand
 {
-
-// Команда зависит от контракта репозитория пользователей,
-// а не от конкретной реализации
+    // Команда зависит от контракта репозитория пользователей,
+    // а не от конкретной реализации
     public function __construct(
         private UsersRepositoryInterface $usersRepository,
         private LoggerInterface $logger
@@ -32,30 +31,29 @@ class CreateUserCommand
      */
     public function handle(Arguments $arguments): void
     {
-        // Логируем информацию о том, что команда запущена
-        // Уровень логирования – INFO
-        $this->logger->info("Create user command started");
 
         $username = $arguments->get('username');
 
         if ($this->userExists($username)) {
             // Логируем сообщение с уровнем WARNING
             $this->logger->warning("User already exists: $username");
-            // Вместо выбрасывания исключения просто выходим из функции
-            return;
+
+            throw new CommandException("User already exists: $username");
         }
 
-        $uuid = UUID::random();
-        $this->usersRepository->save(new User(
-            $uuid,
+        // Создаём объект пользователя
+        // Функция createFrom сама создаст UUID
+        // и захеширует пароль
+        $user = User::createFrom(
             new Name(
                 $arguments->get('first_name'),
-                $arguments->get('last_name')),
+                $arguments->get('last_name')
+            ),
             $username,
-        ));
+            $arguments->get('password')
+        );
 
-        // Логируем информацию о новом пользователе
-        $this->logger->info("User created: $uuid");
+        $this->usersRepository->save($user);
     }
 
     private function userExists(string $username): bool

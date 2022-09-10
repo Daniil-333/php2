@@ -16,6 +16,20 @@ use PHPUnit\Framework\TestCase;
 
 class CreateUserCommandTest extends TestCase
 {
+
+    public function testItRequiresPassword(): void
+    {
+        $command = new CreateUserCommand(
+            $this->makeUsersRepository(),
+            new DummyLogger()
+        );
+        $this->expectException(ArgumentsException::class);
+        $this->expectExceptionMessage('No such argument: password');
+        $command->handle(new Arguments([
+            'username' => 'Ivan',
+        ]));
+    }
+
     // Проверяем, что команда создания пользователя бросает исключение,
     // если пользователь с таким именем уже существует
     public function testItThrowsAnExceptionWhenUserAlreadyExists(): void
@@ -28,10 +42,13 @@ class CreateUserCommandTest extends TestCase
         $this->expectException(CommandException::class);
 
         // и его сообщение
-        $this->expectExceptionMessage('User already exists: Ivan');
+        $this->expectExceptionMessage('User already exists: admin');
 
         // Запускаем команду с аргументами
-        $command->handle(new Arguments(['username' => 'Ivan']));
+        $command->handle(new Arguments([
+            'username' => 'admin',
+            'password' => '123'
+        ]));
     }
 
     public function testItRequiresFirstName(): void
@@ -62,7 +79,10 @@ class CreateUserCommandTest extends TestCase
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage('No such argument: first_name');
         // Запускаем команду
-        $command->handle(new Arguments(['username' => 'Ivan']));
+        $command->handle(new Arguments([
+            'username' => 'Ivan',
+            ''
+        ]));
     }
 
     // Функция возвращает объект типа UsersRepositoryInterface
@@ -147,6 +167,7 @@ class CreateUserCommandTest extends TestCase
             'username' => 'Ivan',
             'first_name' => 'Ivan',
             'last_name' => 'Nikitin',
+            'password' => '123456789'
         ]));
 
         // Проверяем утверждение относительно мока,

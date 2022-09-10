@@ -2,6 +2,7 @@
 
 use Geekbrains\App\Blog\Exceptions\AppException;
 use Geekbrains\App\Blog\Exceptions\HttpException;
+use Geekbrains\App\Http\Actions\Auth\LogIn;
 use Geekbrains\App\Http\Actions\Comments\CreateComment;
 use Geekbrains\App\Http\Actions\Likes\CreateLike;
 use Geekbrains\App\Http\Actions\Posts\CreatePost;
@@ -50,6 +51,7 @@ $routes = [
         '/posts/show' => FindByUuid::class,
     ],
     'POST' => [
+        '/login' => LogIn::class,
         '/users/create' => CreateUser::class,
         '/posts/create' => CreatePost::class,
         '/posts/comment' => CreateComment::class,

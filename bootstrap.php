@@ -10,8 +10,10 @@ use Geekbrains\App\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use Geekbrains\App\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use Geekbrains\App\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
-use Geekbrains\App\Http\Auth\IdentificationInterface;
-use Geekbrains\App\Http\Auth\JsonBodyUsernameIdentification;
+use Geekbrains\App\Http\Auth\BearerTokenAuthentication;
+use Geekbrains\App\Http\Auth\PasswordAuthentication;
+use Geekbrains\App\Http\Auth\PasswordAuthenticationInterface;
+use Geekbrains\App\Http\Auth\TokenAuthenticationInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -37,9 +39,8 @@ if ('yes' === $_ENV['LOG_TO_FILES']) {
         __DIR__ . '/logs/blog.log'
     ))
         ->pushHandler(new StreamHandler(
-            __DIR__ . '/logs/blog.error.log',
-            level: Logger::ERROR,
-            bubble: false,
+            __DIR__ . '/logs/blog.error.log', Logger::ERROR,
+            false,
         ));
 }
 
@@ -50,8 +51,12 @@ if ('yes' === $_ENV['LOG_TO_CONSOLE']) {
 }
 
 $container->bind(
-    IdentificationInterface::class,
-    JsonBodyUsernameIdentification::class
+    PasswordAuthenticationInterface::class,
+    PasswordAuthentication::class
+);
+$container->bind(
+    TokenAuthenticationInterface::class,
+    BearerTokenAuthentication::class
 );
 
 $container->bind(

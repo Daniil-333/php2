@@ -28,15 +28,17 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
         $statement = $this->connection->prepare(
             'INSERT INTO users (
+                       uuid,
                        first_name, 
                        last_name, 
-                       uuid, 
-                       username) 
+                       username,
+                        password) 
                    VALUES (
+                           :uuid, 
                            :first_name, 
                            :last_name, 
-                           :uuid, 
-                           :username
+                           :username,
+                           :password
                            )
                    ON CONFLICT (uuid) DO UPDATE SET
                    first_name = :first_name,
@@ -47,10 +49,11 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         $newUserUuid = (string)$user->uuid();
 
         $statement->execute([
+            ':uuid' => $newUserUuid,
             ':first_name' => $user->name()->first(),
             ':last_name' => $user->name()->last(),
-            ':uuid' => $newUserUuid,
             ':username' => $user->username(),
+            ':password' => $user->hashedPassword(),
         ]);
 
         $this->logger->info("User created: $newUserUuid");
@@ -108,6 +111,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
             new UUID($result['uuid']),
             new Name($result['first_name'], $result['last_name']),
             $result['username'],
+            $result['password']
         );
     }
 }
