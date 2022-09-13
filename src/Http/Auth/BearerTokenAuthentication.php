@@ -41,7 +41,7 @@ class BearerTokenAuthentication implements TokenAuthenticationInterface
             throw new AuthException("Malformed token: [$header]");
         }*/
 
-        // Отрезаем префикс Bearer
+        // Получаем токен из HTTP-заголовока
         $token = $this->getToken($request);
 
         // Ищем токен в репозитории
