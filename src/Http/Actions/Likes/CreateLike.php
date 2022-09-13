@@ -2,6 +2,7 @@
 
 namespace Geekbrains\App\Http\Actions\Likes;
 
+use Geekbrains\App\Blog\Exceptions\AuthException;
 use Geekbrains\App\Blog\Exceptions\HttpException;
 use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\LikeFoundException;
@@ -30,22 +31,28 @@ class CreateLike implements ActionInterface
 
     public function handle(Request $request): Response
     {
+
+        try {
+            $user = $this->authentication->user($request);
+        }catch (AuthException $e) {
+            return new ErrorResponse($e->getMessage());
+        }
+
         try {
             $postUuid = new UUID($request->jsonBodyField('uuid_post'));
-//            new UUID($request->jsonBodyField('uuid_user'));
         } catch (HttpException | InvalidArgumentException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
         try {
             $this->postsRepository->get($postUuid);
-        } catch (PostNotFoundException|UserNotFoundException $e) {
+        } catch (PostNotFoundException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
         try {
-            $userUuid = $this->authentication->user($request)->uuid();
-        } catch (PostNotFoundException|UserNotFoundException $e) {
+            $userUuid = $user->uuid();
+        } catch (UserNotFoundException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
