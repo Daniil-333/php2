@@ -10,9 +10,9 @@ use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Like;
 use Geekbrains\App\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
 use Geekbrains\App\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
-use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Http\Actions\ActionInterface;
+use Geekbrains\App\Http\Auth\TokenAuthenticationInterface;
 use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
@@ -24,7 +24,7 @@ class CreateLike implements ActionInterface
     public function __construct(
         private LikesRepositoryInterface $likesRepository,
         private PostsRepositoryInterface $postsRepository,
-        private UsersRepositoryInterface $usersRepository
+        private TokenAuthenticationInterface $authentication
     ) {
     }
 
@@ -32,7 +32,7 @@ class CreateLike implements ActionInterface
     {
         try {
             $postUuid = new UUID($request->jsonBodyField('uuid_post'));
-            $userUuid = new UUID($request->jsonBodyField('uuid_user'));
+//            new UUID($request->jsonBodyField('uuid_user'));
         } catch (HttpException | InvalidArgumentException $e) {
             return new ErrorResponse($e->getMessage());
         }
@@ -44,7 +44,7 @@ class CreateLike implements ActionInterface
         }
 
         try {
-            $this->usersRepository->get($userUuid);
+            $userUuid = $this->authentication->user($request)->uuid();
         } catch (PostNotFoundException|UserNotFoundException $e) {
             return new ErrorResponse($e->getMessage());
         }

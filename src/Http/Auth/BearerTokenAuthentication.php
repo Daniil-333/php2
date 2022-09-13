@@ -3,6 +3,7 @@
 namespace Geekbrains\App\Http\Auth;
 
 use DateTimeImmutable;
+use Geekbrains\App\Blog\AuthToken;
 use Geekbrains\App\Blog\Exceptions\AuthException;
 use Geekbrains\App\Blog\Exceptions\AuthTokenNotFoundException;
 use Geekbrains\App\Blog\Exceptions\HttpException;
@@ -14,6 +15,7 @@ use GeekBrains\App\Http\Request;
 class BearerTokenAuthentication implements TokenAuthenticationInterface
 {
     private const HEADER_PREFIX = 'Bearer ';
+
     public function __construct(
         // Репозиторий токенов
         private AuthTokensRepositoryInterface $authTokensRepository,
@@ -27,7 +29,7 @@ class BearerTokenAuthentication implements TokenAuthenticationInterface
      */
     public function user(Request $request): User
     {
-        // Получаем HTTP-заголовок
+/*        // Получаем HTTP-заголовок
         try {
             $header = $request->header('Authorization');
         } catch (HttpException $e) {
@@ -37,10 +39,10 @@ class BearerTokenAuthentication implements TokenAuthenticationInterface
         // Проверяем, что заголовок имеет правильный формат
         if (!str_starts_with($header, self::HEADER_PREFIX)) {
             throw new AuthException("Malformed token: [$header]");
-        }
+        }*/
 
         // Отрезаем префикс Bearer
-        $token = mb_substr($header, strlen(self::HEADER_PREFIX));
+        $token = $this->getToken($request);
 
         // Ищем токен в репозитории
         try {
@@ -59,5 +61,23 @@ class BearerTokenAuthentication implements TokenAuthenticationInterface
 
         // Ищем и возвращаем пользователя
         return $this->usersRepository->get($userUuid);
+    }
+
+    public function getToken(Request $request): string
+    {
+        // Получаем HTTP-заголовок
+        try {
+            $header = $request->header('Authorization');
+        } catch (HttpException $e) {
+            throw new AuthException($e->getMessage());
+        }
+
+        // Проверяем, что заголовок имеет правильный формат
+        if (!str_starts_with($header, self::HEADER_PREFIX)) {
+            throw new AuthException("Malformed token: [$header]");
+        }
+
+        // Отрезаем префикс Bearer
+        return mb_substr($header, strlen(self::HEADER_PREFIX));
     }
 }

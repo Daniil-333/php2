@@ -26,6 +26,7 @@ class AuthToken
         return $this->token;
     }
 
+
     public function userUuid(): UUID
     {
         return $this->userUuid;
@@ -35,4 +36,10 @@ class AuthToken
     {
         return $this->expiresOn;
     }
+
+    public function setExpiresOn(DateTimeImmutable $expiresOn): void
+    {
+        $this->expiresOn = $expiresOn;
+    }
+
 }
