@@ -3,6 +3,7 @@
 namespace Geekbrains\App\Http\Actions\Comments;
 
 use Geekbrains\App\Blog\Comment;
+use Geekbrains\App\Blog\Exceptions\AuthException;
 use Geekbrains\App\Blog\Exceptions\HttpException;
 use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Repositories\CommentsRepository\CommentsRepositoryInterface;
@@ -10,17 +11,17 @@ use Geekbrains\App\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Http\Actions\ActionInterface;
+use Geekbrains\App\Http\Auth\TokenAuthenticationInterface;
 use Geekbrains\App\Http\ErrorResponse;
 use Geekbrains\App\Http\Request;
 use Geekbrains\App\Http\Response;
 use Geekbrains\App\Http\SuccessfulResponse;
-use Psr\Log\LoggerInterface;
 
 class CreateComment implements ActionInterface
 {
     public function __construct(
         private CommentsRepositoryInterface $commentsRepository,
-        private UsersRepositoryInterface $usersRepository,
+        private TokenAuthenticationInterface $authentication,
         private PostsRepositoryInterface $postsRepository
     ) {
     }
@@ -28,15 +29,14 @@ class CreateComment implements ActionInterface
     public function handle(Request $request): Response
     {
         try {
-            $authorUuid = new UUID($request->jsonBodyField('author_uuid'));
-            $post_uuid = new UUID($request->jsonBodyField('post_uuid'));
-        } catch (HttpException | InvalidArgumentException $e) {
+            $user = $this->authentication->user($request);
+        } catch (AuthException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
         try {
-            $user = $this->usersRepository->get($authorUuid);
-        } catch (HttpException $e) {
+            $post_uuid = new UUID($request->jsonBodyField('post_uuid'));
+        } catch (HttpException | InvalidArgumentException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
