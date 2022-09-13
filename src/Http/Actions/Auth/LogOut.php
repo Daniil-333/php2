@@ -30,34 +30,30 @@ class LogOut implements ActionInterface
      */
     public function handle(Request $request): Response
     {
-        // Аутентифицируем пользователя
+
         try {
             $user = $this->tokenAuthentication->user($request);
         } catch (AuthException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
-        // Достаём токен из запроса body
         try {
             $token = $this->tokenAuthentication->getToken($request);
         } catch (AuthException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
-        // Генерируем токен
         $authToken = new AuthToken(
             $token,
             $user->uuid(),
-        // Срок годности - 1 день
             (new DateTimeImmutable())->modify('today')
         );
 
-        // Сохраняем токен в репозиторий
         $this->authTokensRepository->save($authToken);
 
-        // Возвращаем токен
         return new SuccessfulResponse([
             'token' => (string)$authToken,
+            'logout' => 'All done'
         ]);
     }
 }
