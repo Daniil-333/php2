@@ -114,4 +114,15 @@ class SqliteUsersRepository implements UsersRepositoryInterface
             $result['password']
         );
     }
+
+    public function clearData(): void
+    {
+        $this->logger->info("Clear table User command started");
+
+        $this->connection->query(
+            "DELETE FROM users"
+        );
+
+        $this->logger->info("Table Users is clear");
+    }
 }

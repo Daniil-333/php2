@@ -4,6 +4,7 @@ namespace Geekbrains\App\UnitTests\Blog\Command;
 
 use Geekbrains\App\Blog\Command\Arguments;
 use Geekbrains\App\Blog\Command\CreateUserCommand;
+use Geekbrains\App\Blog\Command\Users\CreateUser;
 use Geekbrains\App\Blog\Exceptions\ArgumentsException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Repositories\UsersRepository\DummyUsersRepository;
@@ -13,6 +14,8 @@ use Geekbrains\App\UnitTests\DummyLogger;
 use Geekbrains\App\Blog\User;
 use Geekbrains\App\Blog\UUID;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 
 class CreateUserCommandTest extends TestCase
 {
@@ -26,6 +29,8 @@ class CreateUserCommandTest extends TestCase
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage('No such argument: password');
         $command->handle(new Arguments([
+            'first_name' => 'Ivan',
+            'last_name' => 'Nikitin',
             'username' => 'Ivan',
         ]));
     }
@@ -70,6 +75,10 @@ class CreateUserCommandTest extends TestCase
                 // И здесь ничего не делаем
                 throw new UserNotFoundException("Not found");
             }
+
+            public function clearData(): void
+            {
+            }
         };
 
         // Передаём объект анонимного класса
@@ -81,7 +90,7 @@ class CreateUserCommandTest extends TestCase
         // Запускаем команду
         $command->handle(new Arguments([
             'username' => 'Ivan',
-            ''
+            'password' => '123'
         ]));
     }
 
@@ -99,6 +108,10 @@ class CreateUserCommandTest extends TestCase
             public function getByUsername(string $username): User
             {
                 throw new UserNotFoundException("Not found");
+            }
+
+            public function clearData(): void
+            {
             }
         };
     }
@@ -119,6 +132,7 @@ class CreateUserCommandTest extends TestCase
         // Нам нужно передать имя пользователя,
         // чтобы дойти до проверки наличия фамилии
             'first_name' => 'Ivan',
+            'password' => '123'
         ]));
     }
 
@@ -157,18 +171,28 @@ class CreateUserCommandTest extends TestCase
             {
                 return $this->called;
             }
+
+            public function clearData(): void
+            {
+            }
         };
 
         // Передаём наш мок в команду
         $command = new CreateUserCommand($usersRepository, new DummyLogger());
 
         // Запускаем команду
-        $command->handle(new Arguments([
-            'username' => 'Ivan',
-            'first_name' => 'Ivan',
-            'last_name' => 'Nikitin',
-            'password' => '123456789'
-        ]));
+        $command = new CreateUser(
+            $usersRepository
+        );
+        $command->run(
+            new ArrayInput([
+                'username' => 'Ivan',
+                'password' => 'some_password',
+                'first_name' => 'Ivan',
+                'last_name' => 'Nikitin',
+            ]),
+            new NullOutput()
+        );
 
         // Проверяем утверждение относительно мока,
         // а не утверждение относительно команды

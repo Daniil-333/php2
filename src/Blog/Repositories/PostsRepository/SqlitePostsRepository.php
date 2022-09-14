@@ -115,4 +115,15 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
         $this->logger->info("Post deleted: $uuid");
     }
+
+    public function clearData(): void
+    {
+        $this->logger->info("Clear table Posts command started");
+
+        $this->connection->query(
+            "DELETE FROM posts"
+        );
+
+        $this->logger->info("Table Posts is clear");
+    }
 }

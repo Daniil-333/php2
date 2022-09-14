@@ -93,11 +93,11 @@ class UpdateUser extends Command
             $uuid,
 
             // Обновлённое имя
-            $user->name(),
+            $updatedName,
 
             // Имя пользователя и пароль
             // оставляем без изменений
-            $updatedName,
+            $user->username(),
             $user->hashedPassword()
         );
 

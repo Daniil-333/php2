@@ -90,4 +90,15 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             $result['text'],
         );
     }
+
+    public function clearData(): void
+    {
+        $this->logger->info("Clear table Comments command started");
+
+        $this->connection->query(
+            "DELETE FROM comments"
+        );
+
+        $this->logger->info("Table Comments is clear");
+    }
 }

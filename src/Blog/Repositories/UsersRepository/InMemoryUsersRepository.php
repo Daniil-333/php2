@@ -36,4 +36,9 @@ class InMemoryUsersRepository implements UsersRepositoryInterface
     {
         // TODO: Implement getByUsername() method.
     }
+
+    public function clearData(): void
+    {
+        // TODO: Implement clearData() method.
+    }
 }
