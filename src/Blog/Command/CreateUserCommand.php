@@ -8,7 +8,6 @@ use Geekbrains\App\Blog\Exceptions\InvalidArgumentException;
 use Geekbrains\App\Blog\Exceptions\UserNotFoundException;
 use Geekbrains\App\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use Geekbrains\App\Blog\User;
-use Geekbrains\App\Blog\UUID;
 use Geekbrains\App\Person\Name;
 use Psr\Log\LoggerInterface;
 

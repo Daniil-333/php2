@@ -29,17 +29,6 @@ class BearerTokenAuthentication implements TokenAuthenticationInterface
      */
     public function user(Request $request): User
     {
-/*        // Получаем HTTP-заголовок
-        try {
-            $header = $request->header('Authorization');
-        } catch (HttpException $e) {
-            throw new AuthException($e->getMessage());
-        }
-
-        // Проверяем, что заголовок имеет правильный формат
-        if (!str_starts_with($header, self::HEADER_PREFIX)) {
-            throw new AuthException("Malformed token: [$header]");
-        }*/
 
         // Получаем токен из HTTP-заголовока
         $token = $this->getToken($request);

@@ -4,20 +4,11 @@ namespace Geekbrains\App\Blog;
 
 class Like {
 
-    private UUID $uuid;
-    private UUID $uuidPost;
-    private UUID $uuidUser;
-
-    /**
-     * @param UUID $uuid
-     * @param UUID $uuidPost
-     * @param UUID $uuidUser
-     */
-    public function __construct(UUID $uuid, UUID $uuidPost, UUID $uuidUser)
-    {
-        $this->uuid = $uuid;
-        $this->uuidPost = $uuidPost;
-        $this->uuidUser = $uuidUser;
+    public function __construct(
+        private UUID $uuid,
+        private UUID $uuidPost,
+        private UUID $uuidUser
+    ) {
     }
 
     public function __toString(): string

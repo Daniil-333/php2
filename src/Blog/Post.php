@@ -4,17 +4,12 @@ namespace Geekbrains\App\Blog;
 
 class Post {
 
-    private UUID $uuid;
-    private User $user;
-    private string $title;
-    private string $text;
-
-    public function __construct(UUID $uuid, User $user, string $title, string $text)
-    {
-        $this->uuid = $uuid;
-        $this->user = $user;
-        $this->title = $title;
-        $this->text = $text;
+    public function __construct(
+        private UUID $uuid,
+        private User $user,
+        private string $title,
+        private string $text
+    ) {
     }
 
     public function __toString(): string

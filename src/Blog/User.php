@@ -6,23 +6,12 @@ use Geekbrains\App\Person\Name;
 
 class User {
 
-    private UUID $uuid;
-    private Name $name;
-    private string $username;
-    private string $hashedPassword;
-
-    /**
-     * @param UUID $uuid
-     * @param Name $name
-     * @param string $login
-     * @param string $hashedPassword
-     */
-    public function __construct(UUID $uuid, Name $name, string $login, string $hashedPassword)
-    {
-        $this->uuid = $uuid;
-        $this->name = $name;
-        $this->username = $login;
-        $this->hashedPassword = $hashedPassword;
+    public function __construct(
+        private UUID $uuid,
+        private Name $name,
+        private string $username,
+        private string $hashedPassword
+    ) {
     }
 
     public function __toString(): string

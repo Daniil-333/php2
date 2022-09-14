@@ -1,6 +1,5 @@
 <?php
 
-use Dotenv\Dotenv;
 use Geekbrains\App\Blog\Container\DIContainer;
 use Geekbrains\App\Blog\Repositories\AuthTokensRepository\AuthTokensRepositoryInterface;
 use Geekbrains\App\Blog\Repositories\AuthTokensRepository\SqliteAuthTokensRepository;
@@ -20,6 +19,12 @@ use Geekbrains\App\Http\Auth\TokenAuthenticationInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Dotenv\Dotenv;
+use Faker\Generator;
+use Faker\Provider\Lorem;
+use Faker\Provider\ru_RU\Internet;
+use Faker\Provider\ru_RU\Person;
+use Faker\Provider\ru_RU\Text;
 
 
 // Подключаем автозагрузчик Composer
@@ -52,6 +57,21 @@ if ('yes' === $_ENV['LOG_TO_CONSOLE']) {
         new StreamHandler("php://stdout")
     );
 }
+
+// Создаём объект генератора тестовых данных
+$faker = new Generator();
+// Инициализируем необходимые нам виды данных
+$faker->addProvider(new Person($faker));
+$faker->addProvider(new Text($faker));
+$faker->addProvider(new Internet($faker));
+$faker->addProvider(new Lorem($faker));
+
+// Добавляем генератор тестовых данных
+// в контейнер внедрения зависимостей
+$container->bind(
+    Generator::class,
+    $faker
+);
 
 $container->bind(
     PasswordAuthenticationInterface::class,

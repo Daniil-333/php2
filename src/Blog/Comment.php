@@ -4,17 +4,12 @@ namespace Geekbrains\App\Blog;
 
 class Comment {
 
-    private UUID $uuid;
-    private User $user;
-    private Post $post;
-    private string $text;
-
-    public function __construct(UUID $uuid, User $user, Post $post, string $text)
-    {
-        $this->uuid = $uuid;
-        $this->user = $user;
-        $this->post = $post;
-        $this->text = $text;
+    public function __construct(
+        private UUID $uuid,
+        private User $user,
+        private Post $post,
+        private string $text
+    ) {
     }
 
     public function __toString(): string
